@@ -1,0 +1,6 @@
+{
+  "name": "VidyaAI - Government School AI Tutor",
+  "description": "World-class AI tutoring platform empowering government school students, teachers, parents, and educational officers with personalized, multilingual step-by-step learning.",
+  "requestFramePermissions": ["microphone", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

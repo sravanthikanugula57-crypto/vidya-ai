@@ -1,0 +1,322 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // AUTH & VALIDATION HELPERS (Master Gate)
+    // ==========================================
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // ==========================================
+    // USERS & STUDENT PROFILES
+    // ==========================================
+    match /users/{userId} {
+      allow read, write: if true;
+
+      match /{allSubcollections=**} {
+        allow read, write: if true;
+      }
+    }
+
+    match /students/{userId} {
+      allow read, write: if true;
+
+      match /{allSubcollections=**} {
+        allow read, write: if true;
+      }
+    }
+
+    // ==========================================
+    // DIGITAL LIBRARY & EDUCATIONAL RESOURCES
+    // (Firebase Firestore + Storage Source of Truth)
+    // ==========================================
+    match /resources/{resourceId} {
+      // Students can read all published resources; teachers can publish/update
+      allow read, write: if true;
+    }
+
+    match /library_resources/{resourceId} {
+      allow read: if resource.data.status == 'published' || isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Secondary collections for digital library content
+    match /textbooks/{docId} {
+      allow read, write: if true;
+    }
+    match /notes/{docId} {
+      allow read, write: if true;
+    }
+    match /worksheets/{docId} {
+      allow read, write: if true;
+    }
+    match /formula_sheets/{docId} {
+      allow read, write: if true;
+    }
+    match /mind_maps/{docId} {
+      allow read, write: if true;
+    }
+    match /videos/{docId} {
+      allow read, write: if true;
+    }
+    match /ai_videos/{docId} {
+      allow read, write: if true;
+    }
+    match /aiVideos/{docId} {
+      allow read, write: if true;
+    }
+    match /video_jobs/{docId} {
+      allow read, write: if true;
+    }
+    match /videoJobs/{docId} {
+      allow read, write: if true;
+    }
+    match /previous_papers/{docId} {
+      allow read, write: if true;
+    }
+    match /previous_paper_attempts/{docId} {
+      allow read, write: if true;
+    }
+
+    // ==========================================
+    // CURRICULUM, SYLLABUS & LESSONS
+    // ==========================================
+    match /subjects/{subjectId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /chapters/{chapterId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /cmsItems/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /lessons/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /classes/{classId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+
+      match /{allSubcollections=**} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
+    }
+
+    // ==========================================
+    // PRACTICE CENTER & ASSESSMENTS
+    // ==========================================
+    match /practice_sets/{setId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /practiceSets/{setId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    match /practice_questions/{questionId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /practiceQuestions/{questionId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    match /practice_attempts/{attemptId} {
+      allow read, write: if true;
+    }
+    match /practiceAttempts/{attemptId} {
+      allow read, write: if true;
+    }
+
+    match /practice_results/{resultId} {
+      allow read, write: if isSignedIn();
+    }
+    match /practiceResults/{resultId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /bookmarks/{bookmarkId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /mistakes/{mistakeId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /quizzes/{docId} {
+      allow read, write: if true;
+    }
+
+    match /quizAttempts/{attemptId} {
+      allow read, write: if true;
+    }
+
+    match /quiz_attempts/{attemptId} {
+      allow read, write: if true;
+    }
+
+    match /daily_questions/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // ==========================================
+    // MOCK TESTS & SESSIONS
+    // ==========================================
+    match /mockTests/{testId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+
+      match /questions/{questionId} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
+    }
+    match /mock_tests/{testId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+    match /mock_test_questions/{questionId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+    match /mockTestSessions/{sessionId} {
+      allow read, write: if isSignedIn();
+    }
+    match /mock_test_sessions/{sessionId} {
+      allow read, write: if isSignedIn();
+    }
+    match /mockTestAttempts/{attemptId} {
+      allow read, write: if isSignedIn();
+    }
+    match /mock_test_attempts/{attemptId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ==========================================
+    // CLASSROOM, HOMEWORK & COMMUNICATIONS
+    // ==========================================
+    match /studentActivity/{activityId} {
+      allow read, write: if true;
+    }
+    match /student_notes/{noteId} {
+      allow read, write: if true;
+    }
+    match /doubtThreads/{threadId} {
+      allow read, write: if true;
+    }
+    match /grand_mock_attempts/{attemptId} {
+      allow read, write: if true;
+    }
+
+    match /assignments/{docId} {
+      allow read, write: if true;
+    }
+    match /assignmentSubmissions/{docId} {
+      allow read, write: if true;
+    }
+    match /homeworks/{docId} {
+      allow read, write: if true;
+    }
+    match /homework/{docId} {
+      allow read, write: if true;
+    }
+    match /homeworkSubmissions/{docId} {
+      allow read, write: if true;
+    }
+    match /homework_submissions/{docId} {
+      allow read, write: if true;
+    }
+
+    match /announcements/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+    match /announcement_reads/{docId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /discussions/{docId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+
+      match /replies/{replyId} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
+    }
+
+    match /doubts/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /student_doubts/{docId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ==========================================
+    // CLASS DISCUSSION GROUPS & REAL-TIME FORUMS
+    // ==========================================
+    match /discussionGroups/{groupId} {
+      allow read, write: if true;
+
+      match /posts/{postId} {
+        allow read, write: if true;
+
+        match /replies/{replyId} {
+          allow read, write: if true;
+        }
+      }
+    }
+
+    match /notifications/{docId} {
+      allow read, write: if true;
+    }
+    match /teacher_notifications/{docId} {
+      allow read, write: if true;
+    }
+
+    match /progress/{studentUid} {
+      allow read, write: if true;
+
+      match /{allSubcollections=**} {
+        allow read, write: if true;
+      }
+    }
+
+    match /studentProgress/{docId} {
+      allow read, write: if true;
+    }
+
+    match /groups/{docId} {
+      allow read, write: if isSignedIn();
+
+      match /messages/{messageId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+    match /messages/{docId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

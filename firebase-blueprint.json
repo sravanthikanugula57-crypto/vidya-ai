@@ -1,0 +1,588 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile for students, teachers, parents, and administrators.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "User UID" },
+        "name": { "type": "string", "description": "Full display name", "maxLength": 100 },
+        "email": { "type": "string", "description": "Email address" },
+        "phone": { "type": "string", "description": "Mobile phone number" },
+        "role": { "type": "string", "enum": ["student", "teacher", "parent", "admin", "super_admin", "guest"] },
+        "grade": { "type": "string", "description": "Grade / Class (e.g., Class 10)" },
+        "board": { "type": "string", "description": "Educational Board (e.g., Telangana SSC Board / State Board)" },
+        "medium": { "type": "string", "description": "Instruction Medium" },
+        "preferredLanguage": { "type": "string", "enum": ["en", "te", "hi"], "description": "Preferred UI and study material language (English, Telugu, Hindi)" },
+        "preferredLang": { "type": "string", "enum": ["en", "te", "hi"], "description": "Preferred UI language code alias" },
+        "schoolName": { "type": "string", "description": "School Name" },
+        "district": { "type": "string", "description": "District / Location" },
+        "state": { "type": "string" },
+        "photoURL": { "type": "string", "description": "Profile picture URL" },
+        "isVerified": { "type": "boolean" },
+        "isEmailVerified": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "streakDays": { "type": "number" },
+        "xp": { "type": "number" },
+        "coins": { "type": "number" },
+        "boardExamDate": { "type": "string" }
+      },
+      "required": ["id", "name", "role", "createdAt"]
+    },
+    "StudyPlanItem": {
+      "title": "Study Plan Task Item",
+      "description": "Task item for student's daily study plan.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "subject": { "type": "string" },
+        "estMinutes": { "type": "number" },
+        "completed": { "type": "boolean" },
+        "dueDate": { "type": "string" },
+        "type": { "type": "string" },
+        "priority": { "type": "string", "enum": ["High", "Medium", "Low"] },
+        "reasoning": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "subject", "completed", "createdAt"]
+    },
+    "SubjectProgress": {
+      "title": "Class 10 Subject Progress",
+      "description": "Progress and metrics for a Class 10 subject.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "nativeName": { "type": "string" },
+        "completedPercent": { "type": "number" },
+        "chaptersCompleted": { "type": "number" },
+        "totalChapters": { "type": "number" },
+        "weakTopics": { "type": "string" },
+        "lastStudied": { "type": "string" },
+        "quizScoreAvg": { "type": "number" },
+        "color": { "type": "string" },
+        "icon": { "type": "string" }
+      },
+      "required": ["id", "name", "completedPercent"]
+    },
+    "HomeworkItem": {
+      "title": "Homework & Assignment Item",
+      "description": "Pending homework task or assignment for the student.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "subject": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "submitted", "graded"] },
+        "priority": { "type": "string" },
+        "gradeScore": { "type": "string" },
+        "description": { "type": "string" },
+        "maxScore": { "type": "number" },
+        "submittedAt": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "subject", "dueDate", "status"]
+    },
+    "StudentNotification": {
+      "title": "Student Notification",
+      "description": "In-app notification for student.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["assignment", "exam", "ai", "system"] },
+        "date": { "type": "string" },
+        "read": { "type": "boolean" },
+        "link": { "type": "string" }
+      },
+      "required": ["id", "title", "message", "read", "date"]
+    },
+    "ActivityLog": {
+      "title": "Recent Activity Log",
+      "description": "Student activity log entry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "xpGained": { "type": "number" }
+      },
+      "required": ["id", "action", "title", "timestamp"]
+    },
+    "AITutorMessage": {
+      "title": "AI Tutor Chat Message",
+      "description": "Chat log between student and Class 10 AI Tutor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sender": { "type": "string", "enum": ["user", "ai"] },
+        "text": { "type": "string" },
+        "subject": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "sender", "text", "timestamp"]
+    },
+    "WeeklyProgressItem": {
+      "title": "Weekly Progress Metric",
+      "description": "Day-by-day study metric for student.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "day": { "type": "string" },
+        "studyMinutes": { "type": "number" },
+        "quizzesAttempted": { "type": "number" },
+        "accuracyPercent": { "type": "number" }
+      },
+      "required": ["id", "day", "studyMinutes"]
+    },
+    "CalendarEvent": {
+      "title": "Calendar Event",
+      "description": "Event on the student's academic calendar.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "category": { "type": "string", "enum": ["exam", "study", "assignment", "revision"] },
+        "description": { "type": "string" },
+        "completed": { "type": "boolean" }
+      },
+      "required": ["id", "title", "date", "category"]
+    },
+    "ContinueLearning": {
+      "title": "Active Lesson Tracking",
+      "description": "Tracks student's current active chapter and progress.",
+      "type": "object",
+      "properties": {
+        "subject": { "type": "string" },
+        "chapterName": { "type": "string" },
+        "topicName": { "type": "string" },
+        "progressPercent": { "type": "number text" },
+        "lastStep": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "PracticeSet": {
+      "title": "Board Exam Practice Set",
+      "description": "A structured practice set for a chapter containing 30-50 questions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "chapterNumber": { "type": "number" },
+        "chapterTitle": { "type": "string" },
+        "description": { "type": "string" },
+        "questionCount": { "type": "number" },
+        "totalMarks": { "type": "number" },
+        "timeLimitMinutes": { "type": "number" },
+        "category": { "type": "string" },
+        "status": { "type": "string" },
+        "author": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "subject", "chapterTitle", "questionCount"]
+    },
+    "PracticeQuestion": {
+      "title": "Board Practice Question",
+      "description": "Question item in a practice set with options, hints, and explanations.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "setId": { "type": "string" },
+        "subject": { "type": "string" },
+        "chapterNumber": { "type": "number" },
+        "chapterTitle": { "type": "string" },
+        "topic": { "type": "string" },
+        "type": { "type": "string" },
+        "difficulty": { "type": "string" },
+        "marks": { "type": "number" },
+        "questionText": { "type": "string" },
+        "nativeQuestionText": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "passageText": { "type": "string" },
+        "options": { "type": "array" },
+        "correctAnswer": { "type": "string" },
+        "hint": { "type": "string" },
+        "explanation": { "type": "string" },
+        "teacherSolution": { "type": "string" },
+        "relatedConcept": { "type": "string" },
+        "suggestedLessonId": { "type": "string" },
+        "pyqYear": { "type": "string" },
+        "isImportant": { "type": "boolean" }
+      },
+      "required": ["id", "setId", "subject", "questionText", "correctAnswer", "explanation"]
+    },
+    "PracticeAttempt": {
+      "title": "Practice Attempt Progress",
+      "description": "Active student practice attempt with saved state.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "setId": { "type": "string" },
+        "currentQuestionIndex": { "type": "number" },
+        "answers": { "type": "object" },
+        "markedForRevision": { "type": "object" },
+        "bookmarked": { "type": "object" },
+        "timeSpentSeconds": { "type": "number" },
+        "startedAt": { "type": "string" },
+        "lastSavedAt": { "type": "string" },
+        "isCompleted": { "type": "boolean" }
+      },
+      "required": ["id", "userId", "setId"]
+    },
+    "PracticeResult": {
+      "title": "Completed Practice Set Evaluation Result",
+      "description": "Performance result, score, percentage, time, weak and strong topics.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "setId": { "type": "string" },
+        "setTitle": { "type": "string" },
+        "subject": { "type": "string" },
+        "chapterTitle": { "type": "string" },
+        "totalQuestions": { "type": "number" },
+        "correctAnswers": { "type": "number" },
+        "wrongAnswers": { "type": "number" },
+        "skippedQuestions": { "type": "number" },
+        "score": { "type": "number" },
+        "totalMarks": { "type": "number" },
+        "percentage": { "type": "number" },
+        "timeTakenSeconds": { "type": "number" },
+        "accuracyPercentage": { "type": "number" },
+        "weakTopics": { "type": "array" },
+        "strongTopics": { "type": "array" },
+        "suggestedRevision": { "type": "string" },
+        "completedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "setId", "score", "percentage"]
+    },
+    "Announcement": {
+      "title": "School & Class Announcement",
+      "description": "Targeted announcement created and published by authorized teachers and administrators.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "message": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["General", "Academic", "Homework", "Exam", "Event", "Important", "Holiday", "Notice"] },
+        "targetClass": { "type": "string", "description": "Target class grade e.g. Class 5, Class 6, All Students" },
+        "targetSection": { "type": "string", "description": "Target section e.g. All Sections, 5A, 5B, etc." },
+        "targetAudience": { "type": "string", "enum": ["All", "Students", "Parents", "Teachers"] },
+        "priority": { "type": "string", "enum": ["Normal", "Important", "Urgent"] },
+        "status": { "type": "string", "enum": ["DRAFT", "PUBLISHED", "EXPIRED", "ARCHIVED"] },
+        "createdBy": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorRole": { "type": "string" },
+        "publishDate": { "type": "string" },
+        "scheduledFor": { "type": "string" },
+        "expiresAt": { "type": "string" },
+        "attachmentUrl": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "publishedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "type", "targetClass", "priority", "status", "createdBy", "createdAt"]
+    },
+    "AnnouncementRead": {
+      "title": "Student Announcement Read Status",
+      "description": "Per-student tracking for read announcements to determine individual unread status.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Composite key {studentId}_{announcementId}" },
+        "studentId": { "type": "string" },
+        "announcementId": { "type": "string" },
+        "readAt": { "type": "string" }
+      },
+      "required": ["id", "studentId", "announcementId", "readAt"]
+    },
+    "DiscussionPost": {
+      "title": "Class Discussion Room Post",
+      "description": "Student or teacher doubt or discussion topic.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "classId": { "type": "string", "description": "Class room identifier e.g. Class 5 ... Class 10" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorRole": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "likes": { "type": "number" },
+        "isPinned": { "type": "boolean" },
+        "isClosed": { "type": "boolean" },
+        "repliesCount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "classId", "content", "authorId", "authorName", "createdAt"]
+    },
+    "Resource": {
+      "title": "Educational Library Resource",
+      "description": "Teacher and official published resources (textbooks, notes, study material, practice material, video lessons).",
+      "type": "object",
+      "properties": {
+        "resourceId": { "type": "string" },
+        "board": { "type": "string" },
+        "class": { "type": "string", "description": "Target class e.g. Class 10 or 10" },
+        "subject": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "chapterName": { "type": "string" },
+        "resourceType": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "language": { "type": "string" },
+        "sourceType": { "type": "string", "enum": ["file", "url"] },
+        "sourceUrl": { "type": "string" },
+        "storagePath": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "uploadedBy": { "type": "object" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "publishedAt": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "pending", "published", "unpublished"] }
+      },
+      "required": ["resourceId", "board", "class", "subject", "chapterId", "chapterName", "title", "status"]
+    },
+    "PreviousPaper": {
+      "title": "SSC Board Previous Question Paper",
+      "description": "Genuine previous year SSC question paper document from official board releases.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 250 },
+        "subject": { "type": "string" },
+        "board": { "type": "string" },
+        "year": { "type": "string" },
+        "medium": { "type": "string" },
+        "totalMarks": { "type": "number" },
+        "duration": { "type": "string" },
+        "fileSize": { "type": "string" },
+        "pdfUrl": { "type": "string" },
+        "thumbnail": { "type": "string" },
+        "published": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["title", "subject", "board", "year", "medium", "pdfUrl", "published"]
+    },
+    "MockTest": {
+      "title": "Class 5 Mock Test",
+      "description": "Timed grand mock test document containing subject questions, duration, and instructions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "class": { "type": "number", "description": "Class grade e.g. 5" },
+        "subjectId": { "type": "string" },
+        "subject": { "type": "string" },
+        "duration": { "type": "number", "description": "Duration in minutes" },
+        "totalMarks": { "type": "number" },
+        "totalQuestions": { "type": "number" },
+        "published": { "type": "boolean" },
+        "instructions": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "class", "duration", "totalMarks", "totalQuestions", "published"]
+    },
+    "MockTestAttempt": {
+      "title": "Mock Test Attempt Record",
+      "description": "Student evaluation and attempt result stored in Firestore.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "class": { "type": "number" },
+        "mockTestId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "score": { "type": "number" },
+        "totalMarks": { "type": "number" },
+        "percentage": { "type": "number" },
+        "correctAnswers": { "type": "number" },
+        "incorrectAnswers": { "type": "number" },
+        "unanswered": { "type": "number" },
+        "startedAt": { "type": "string" },
+        "submittedAt": { "type": "string" },
+        "timeTaken": { "type": "string" },
+        "answers": { "type": "object" },
+        "status": { "type": "string", "enum": ["in_progress", "submitted"] }
+      },
+      "required": ["id", "studentId", "mockTestId", "score", "totalMarks", "percentage", "submittedAt"]
+    },
+    "AIVideo": {
+      "title": "AI Educational Video Lesson",
+      "description": "Generated educational video lesson with metadata, scenes, storyboard, transcript, quiz, and real video URL.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "nativeTitle": { "type": "string" },
+        "class": { "type": "string" },
+        "subject": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "chapter": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "topic": { "type": "string" },
+        "topicId": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "videoBlobKey": { "type": "string" },
+        "durationSeconds": { "type": "number" },
+        "durationFormatted": { "type": "string" },
+        "thumbnailUrl": { "type": "string" },
+        "scenes": { "type": "array" },
+        "summary": { "type": "string" },
+        "interactiveQuiz": { "type": "array" },
+        "practiceQuestions": { "type": "array" },
+        "status": { "type": "string", "enum": ["completed", "processing", "failed"] },
+        "createdAt": { "type": "string" },
+        "creatorId": { "type": "string" },
+        "viewsCount": { "type": "number" }
+      },
+      "required": ["id", "title", "class", "subject", "chapter", "topic", "videoUrl", "status", "createdAt"]
+    },
+    "AIVideoJob": {
+      "title": "AI Video Generation Job",
+      "description": "Asynchronous job record tracking the stages of AI educational video synthesis.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "class": { "type": "string" },
+        "subject": { "type": "string" },
+        "chapter": { "type": "string" },
+        "topic": { "type": "string" },
+        "language": { "type": "string" },
+        "status": { "type": "string", "enum": ["queued", "generating_script", "synthesizing_audio", "rendering_visuals", "assembling_video", "completed", "failed"] },
+        "progressPercent": { "type": "number" },
+        "statusMessage": { "type": "string" },
+        "videoId": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "error": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "class", "subject", "chapter", "topic", "status", "progressPercent"]
+    }
+  },
+  "firestore": {
+    "/ai_videos/{videoId}": {
+      "schema": "AIVideo",
+      "description": "Generated AI educational video lessons indexed by class, subject, chapter, and topic"
+    },
+    "/aiVideos/{videoId}": {
+      "schema": "AIVideo",
+      "description": "Alias path for generated AI educational video lessons"
+    },
+    "/video_jobs/{jobId}": {
+      "schema": "AIVideoJob",
+      "description": "Real-time AI educational video generation job status queue"
+    },
+    "/videoJobs/{jobId}": {
+      "schema": "AIVideoJob",
+      "description": "Alias path for AI video generation job tracking"
+    },
+    "/previous_papers/{paperId}": {
+      "schema": "PreviousPaper",
+      "description": "Genuine previous year examination papers repository"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile collection indexed by Auth UID."
+    },
+    "/students/{userId}/studyPlans/{planId}": {
+      "schema": "StudyPlanItem",
+      "description": "Student's daily study tasks."
+    },
+    "/students/{userId}/subjectProgress/{subjectId}": {
+      "schema": "SubjectProgress",
+      "description": "Subject progress cards for Class 10."
+    },
+    "/students/{userId}/homework/{homeworkId}": {
+      "schema": "HomeworkItem",
+      "description": "Homework and assignment items."
+    },
+    "/students/{userId}/notifications/{notificationId}": {
+      "schema": "StudentNotification",
+      "description": "In-app notifications."
+    },
+    "/students/{userId}/activity/{activityId}": {
+      "schema": "ActivityLog",
+      "description": "Audit activity feed."
+    },
+    "/students/{userId}/aiTutorChat/{chatId}": {
+      "schema": "AITutorMessage",
+      "description": "AI Tutor questions and responses."
+    },
+    "/students/{userId}/weeklyProgress/{dayId}": {
+      "schema": "WeeklyProgressItem",
+      "description": "Weekly study minutes & accuracy."
+    },
+    "/students/{userId}/calendarEvents/{eventId}": {
+      "schema": "CalendarEvent",
+      "description": "Exam dates and study schedule events."
+    },
+    "/students/{userId}/continueLearning/current": {
+      "schema": "ContinueLearning",
+      "description": "Currently active lesson state."
+    },
+    "/subjects/{subjectId}": {
+      "schema": "SubjectProgress",
+      "description": "Global subjects catalogue"
+    },
+    "/chapters/{chapterId}": {
+      "schema": "SubjectProgress",
+      "description": "Global chapters catalogue"
+    },
+    "/practice_sets/{setId}": {
+      "schema": "PracticeSet",
+      "description": "Published and draft practice sets"
+    },
+    "/practice_questions/{questionId}": {
+      "schema": "PracticeQuestion",
+      "description": "Practice set questions bank"
+    },
+    "/practice_attempts/{attemptId}": {
+      "schema": "PracticeAttempt",
+      "description": "Student active attempt progress"
+    },
+    "/practice_results/{resultId}": {
+      "schema": "PracticeResult",
+      "description": "Student completed practice evaluation results"
+    },
+    "/bookmarks/{bookmarkId}": {
+      "schema": "PracticeQuestion",
+      "description": "Bookmarked practice questions"
+    },
+    "/mistakes/{mistakeId}": {
+      "schema": "PracticeQuestion",
+      "description": "Student practice mistake tracking"
+    },
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "Teacher and administrator targeted announcements for specific classes"
+    },
+    "/announcement_reads/{readId}": {
+      "schema": "AnnouncementRead",
+      "description": "Student announcement read receipts"
+    },
+    "/discussions/{discussionId}": {
+      "schema": "DiscussionPost",
+      "description": "Real-time class discussion room posts and doubts"
+    },
+    "/resources/{resourceId}": {
+      "schema": "Resource",
+      "description": "Digital Library Educational Resources (Textbooks, Notes, Formulas, Videos, Study Materials)"
+    }
+  }
+}
